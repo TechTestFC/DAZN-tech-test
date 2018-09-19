@@ -12,6 +12,7 @@ class App extends Component {
             searchValue: undefined,
             movies: [],
         };
+        this.debouncedFetchMovies = debounce(this.fetchMovies, 500);
     }
 
     fetchMovies(searchValue) {
@@ -25,7 +26,7 @@ class App extends Component {
         this.setState({
             searchValue,
         });
-        debounce(this.fetchMovies(searchValue), 500);
+        this.debouncedFetchMovies(searchValue);
     }
 
     render() {
