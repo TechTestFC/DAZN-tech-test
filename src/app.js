@@ -1,17 +1,30 @@
 import React, { Component } from 'react';
-import glamorous from 'glamorous';
 import { hot } from 'react-hot-loader';
+import Searchbar from './searchbar';
 
-const RedParagraph = glamorous.p({
-    color: 'red',
-});
 
 class App extends Component {
-  render() {
-    return (
-      <RedParagraph>hi!</RedParagraph>
-    );
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            searchValue: undefined,
+        };
+    }
+
+    onSearchValueChangeHandler(searchValue) {
+        this.setState({
+            searchValue,
+        });
+    }
+
+    render() {
+        return (
+            <Searchbar
+                searchValue={this.state.searchValue}
+                onSearchValueChange={(searchValue) => this.onSearchValueChangeHandler(searchValue)}
+            />
+        );
+    }
 }
 
 export default hot(module)(App);
