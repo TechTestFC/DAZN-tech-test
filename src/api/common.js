@@ -1,4 +1,4 @@
-const checkStatus = (response) => {
+export const checkStatus = (response) => {
     if (response.status !== 200) {
         console.log('bounce! http code: ', response.status);
         throw new Error(`bounce! http code: ${response.status}`);
@@ -7,11 +7,11 @@ const checkStatus = (response) => {
     return response;
 };
 
-const parseJSON = (response) => {
+export const parseJSON = (response) => {
     return response.json().then((data) => data);
 };
 
-const handleError = (err) => {
+export const handleError = (err) => {
     console.log('error!', err);
 };
 
