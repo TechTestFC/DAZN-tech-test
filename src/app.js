@@ -113,7 +113,7 @@ class App extends Component {
                 />
                 <SearchResultList movies={movies} onMovieClicked={this.onMovieClickedHandler} />
                 <Modal
-                    isOpen={this.state.selectedMovie}
+                    isOpen={Boolean(this.state.selectedMovie)}
                     onRequestClose={this.onMovieClosedHandler}
                     style={customModalStyle}
                 >
