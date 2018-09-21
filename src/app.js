@@ -3,6 +3,7 @@ import glamorous from 'glamorous';
 import PropTypes from 'prop-types';
 import { hot } from 'react-hot-loader';
 import Modal from 'react-modal';
+import MovieDetails from './movieDetails';
 import Searchbar from './search/searchbar';
 import { debounce } from '../utils/async-utils';
 import waitingLogo from '../assets/waiting-logo.png';
@@ -10,7 +11,7 @@ import notFoundLogo from '../assets/not-found-logo.png';
 import SearchResultList from './search/searchResultList';
 import { fontSizes } from '../styles/constants';
 
-export const extractImage = (imagesConfiguration, poster_path) => {
+export const extractImage = (imagesConfiguration, poster_path, size = 'original') => {
     if (!imagesConfiguration) {
         return waitingLogo;
     }
@@ -19,7 +20,7 @@ export const extractImage = (imagesConfiguration, poster_path) => {
         return notFoundLogo;
     }
 
-    return `${imagesConfiguration.base_url}w45${poster_path}`;
+    return `${imagesConfiguration.base_url}${size}${poster_path}`;
 };
 
 const Wrapper = glamorous.div({
@@ -49,6 +50,7 @@ class App extends Component {
         this.debouncedFetchMovies = debounce(this.fetchMovies, 500);
         this.onSearchValueChangeHandler = this.onSearchValueChangeHandler.bind(this);
         this.onMovieClickedHandler = this.onMovieClickedHandler.bind(this);
+        this.onMovieClosedHandler = this.onMovieClosedHandler.bind(this);
     }
 
     componentDidMount() {
@@ -76,12 +78,17 @@ class App extends Component {
         this.setState({ selectedMovie: movie });
     }
 
+    onMovieClosedHandler() {
+        this.setState({ selectedMovie: null });
+    }
+
     getMoviesWithFullPosterPath() {
         const { movies, imagesConfiguration } = this.state;
         return movies.map((movie) => {    
-            const { poster_path, ...others } = movie;
-            const updatedPosterPath = extractImage(imagesConfiguration, poster_path);
-            return { ...others, poster_path: updatedPosterPath };
+            const { poster_path, backdrop_path, ...others } = movie;
+            const updatedPosterPath = extractImage(imagesConfiguration, poster_path, 'w45');
+            const updatedBackdropPath = extractImage(imagesConfiguration, backdrop_path);
+            return { ...others, poster_path: updatedPosterPath, backdrop_path: updatedBackdropPath };
         });
     }
 
@@ -95,6 +102,12 @@ class App extends Component {
                     onSearchValueChange={this.onSearchValueChangeHandler}
                 />
                 <SearchResultList movies={movies} onMovieClicked={this.onMovieClickedHandler} />
+                <Modal
+                    isOpen={this.state.selectedMovie}
+                    onRequestClose={this.onMovieClosedHandler}
+                >
+                    <MovieDetails movie={this.state.selectedMovie} onCloseMovie={this.onMovieClickedHandler} />
+                </Modal>
             </Wrapper>
         );
     }

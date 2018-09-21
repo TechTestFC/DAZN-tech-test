@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import glamorous from 'glamorous';
+import { getFullTitle } from '../utils/movie-utils';
 
 export const Wrapper = glamorous.div({
     width: '100%',
@@ -30,8 +31,7 @@ export const Title = glamorous.h4({
 });
 
 const SearchResultItem = ({ movie, onMovieClicked }) => {
-    const releaseDate = new Date(movie.release_date);
-    const fullTitle = `${movie.title} (${releaseDate.getFullYear()})`;
+    const fullTitle = getFullTitle(movie);
     return (
         <Wrapper onClick={() => onMovieClicked(movie)}>
             <Img src={movie.poster_path} />
@@ -46,6 +46,7 @@ SearchResultItem.propTypes = {
     movie: PropTypes.shape({
         poster_path: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
+        release_date: PropTypes.string.isRequired,
     }).isRequired,
     onMovieClicked: PropTypes.func.isRequired,
 };

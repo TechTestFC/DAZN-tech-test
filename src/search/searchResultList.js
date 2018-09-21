@@ -39,6 +39,7 @@ SearchResultList.propTypes = {
     movies: PropTypes.arrayOf(PropTypes.shape({
         poster_path: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
+        release_date: PropTypes.string.isRequired,
     })).isRequired,
     onMovieClicked: PropTypes.func.isRequired,
 };
