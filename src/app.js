@@ -39,6 +39,16 @@ export const Title = glamorous.h1({
     color: '#9E9E9E',
 });
 
+const customModalStyle = {
+    content: {
+        maxWidth: '50rem',
+        height: 'fit-content',
+        margin: 'auto',
+    },
+    overlay: {
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    },
+};
 class App extends Component {
     constructor(props) {
         super(props);
@@ -105,6 +115,7 @@ class App extends Component {
                 <Modal
                     isOpen={this.state.selectedMovie}
                     onRequestClose={this.onMovieClosedHandler}
+                    style={customModalStyle}
                 >
                     <MovieDetails movie={this.state.selectedMovie} onCloseMovie={this.onMovieClickedHandler} />
                 </Modal>
