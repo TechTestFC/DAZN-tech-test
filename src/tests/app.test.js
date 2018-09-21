@@ -1,9 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import App, { extractImage } from '../app';
+import App, { Title, extractImage } from '../app';
 import Searchbar from '../search/searchbar';
 import waitingLogo from '../../assets/waiting-logo.png';
 import notFoundLogo from '../../assets/not-found-logo.png';
+import SearchResultList from '../search/searchResultList';
 
 describe('<App />', () => {
     let API;
@@ -40,6 +41,7 @@ describe('<App />', () => {
         expect(searchbar.length).toBe(1)
         expect(searchbar.props().searchValue).toBe('');
         expect(searchbar.props().onSearchValueChange).toBeDefined();
+        expect(component.find(Title).length).toBe(1);
     });
     it('should edit state.searchValue when Searchbar changes value', () => {
         const component = shallow(<App API={API} />);
@@ -60,6 +62,13 @@ describe('<App />', () => {
             expect(component.state().movies).toEqual([{ title: 'Star Wars' }, { title: 'Star Trek' }, { title: 'Stargate' }]);
             done();
         }, 600);
+    });
+    it('should set state.selectedMovie when a movie is clicked', () => {
+        const component = shallow(<App API={API} />);
+
+        const movie = { title: 'Star Wars' };
+        component.find(SearchResultList).props().onMovieClicked(movie);
+        expect(component.state().selectedMovie).toEqual(movie);
     });
     describe('extractImage', () => {
         it('should return waitingLogo', () => {

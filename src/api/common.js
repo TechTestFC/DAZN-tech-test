@@ -20,4 +20,4 @@ export const request = (requestURL, options) => {
         .then(checkStatus)
         .then(parseJSON)
         .catch(handleError);
-} 
+};

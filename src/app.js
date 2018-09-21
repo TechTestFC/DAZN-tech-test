@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
+import glamorous from 'glamorous';
 import PropTypes from 'prop-types';
 import { hot } from 'react-hot-loader';
+import Modal from 'react-modal';
 import Searchbar from './search/searchbar';
 import { debounce } from '../utils/async-utils';
 import waitingLogo from '../assets/waiting-logo.png';
 import notFoundLogo from '../assets/not-found-logo.png';
 import SearchResultList from './search/searchResultList';
+import { fontSizes } from '../styles/constants';
 
 export const extractImage = (imagesConfiguration, poster_path) => {
     if (!imagesConfiguration) {
@@ -19,14 +22,33 @@ export const extractImage = (imagesConfiguration, poster_path) => {
     return `${imagesConfiguration.base_url}w45${poster_path}`;
 };
 
+const Wrapper = glamorous.div({
+    width: '100%',
+    minHeight: '100%',
+    padding: 0,
+    margin: 0,
+    backgroundColor: '#f0f0f0',
+});
+
+export const Title = glamorous.h1({
+    textAlign: 'center',
+    paddingTop: '1rem',
+    marginBottom: '1rem',
+    fontSize: fontSizes.huge,
+    color: '#9E9E9E',
+});
+
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
             searchValue: '',
             movies: [],
+            selectedMovie: null,
         };
         this.debouncedFetchMovies = debounce(this.fetchMovies, 500);
+        this.onSearchValueChangeHandler = this.onSearchValueChangeHandler.bind(this);
+        this.onMovieClickedHandler = this.onMovieClickedHandler.bind(this);
     }
 
     componentDidMount() {
@@ -50,6 +72,10 @@ class App extends Component {
         this.debouncedFetchMovies(searchValue);
     }
 
+    onMovieClickedHandler(movie) {
+        this.setState({ selectedMovie: movie });
+    }
+
     getMoviesWithFullPosterPath() {
         const { movies, imagesConfiguration } = this.state;
         return movies.map((movie) => {    
@@ -62,13 +88,14 @@ class App extends Component {
     render() {
         const movies = this.getMoviesWithFullPosterPath();
         return (
-            <div>
+            <Wrapper>
+                <Title>Movie Finder</Title>
                 <Searchbar
                     searchValue={this.state.searchValue}
-                    onSearchValueChange={(searchValue) => this.onSearchValueChangeHandler(searchValue)}
+                    onSearchValueChange={this.onSearchValueChangeHandler}
                 />
-                <SearchResultList movies={movies} />
-            </div>
+                <SearchResultList movies={movies} onMovieClicked={this.onMovieClickedHandler} />
+            </Wrapper>
         );
     }
 }
